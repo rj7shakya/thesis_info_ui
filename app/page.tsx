@@ -15,7 +15,7 @@ export default function Home() {
     setLoading(true);
 
     try {
-      setData((await axios.post("/api/generate", { statement })).data);
+      setData((await axios.post("/api/generate", { statement })).data?.facts);
     } catch (error) {
       console.log(error);
       setData(null);
@@ -33,7 +33,7 @@ export default function Home() {
     }
   };
 
-  console.log("datadatadata", data);
+  console.log("print", data);
 
   return (
     <div className="flex flex-col items-center justify-center w-screen bg-gray-100 p-6">

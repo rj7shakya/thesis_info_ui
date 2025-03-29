@@ -76,7 +76,7 @@ const Infographic1 = ({ data, imageUrl, type, quantity }: any) => {
         <></>
       )}
 
-      <div className="w-64 p-4 text-center md:text-left">
+      <div className="w-80 p-4 text-center md:text-left">
         <Before before={before} />
         <Number number={number} />
         <After after={after} />

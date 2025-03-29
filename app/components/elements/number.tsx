@@ -1,15 +1,17 @@
 import { separateNumbersText } from "@/app/utils";
 import React from "react";
 
-const Number = ({ number }: { number: string }) => {
+const Number = ({ number, whole }: { number: string; whole?: boolean }) => {
   return (
-    <div className="flex flex-wrap flex-row items-center">
+    <div className={`flex flex-wrap flex-row items-center mr-1`}>
       {separateNumbersText(number).map((item: any, index: any) => (
         <>
           <span
             key={index}
             className={`${
-              typeof item === "number"
+              whole
+                ? "text-3xl ml-1"
+                : typeof item === "number"
                 ? item.toString().length >= 4
                   ? "text-6xl"
                   : "text-8xl"

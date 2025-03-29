@@ -1,9 +1,11 @@
 "use client";
 
+import { COLORS } from "@/app/utils";
 import React, { useRef } from "react";
 import { PieChart, Pie, Cell, ResponsiveContainer } from "recharts";
-
-const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"];
+import Before from "../elements/before";
+import After from "../elements/after";
+import Number from "../elements/number";
 
 const splitTextIntoLines = (text: string): string[] => {
   const words = text?.split(" ") ?? [];
@@ -63,7 +65,7 @@ const CustomLabel = (props: any) => {
         <text
           key={i}
           x={x + textOffset}
-          y={y + (i - (lines.length - 1) / 2) * 20}
+          y={y + (i - (lines.length - 1)) * 20}
           fill={COLORS[index]}
           textAnchor={x > cx ? "start" : "end"}
           dominantBaseline="central"
@@ -98,46 +100,59 @@ const renderCustomizedLabel = (props: any) => {
   );
 };
 
-const Infographic2 = ({ numbers, facts, imageUrl, type, quantity }: any) => {
-  const data = facts.map((fact: string, index: number) => ({
-    name: fact,
-    value: numbers[index],
+const Infographic2 = ({ numbers, facts, whole }: any) => {
+  const data = numbers.map((value: number, index: number) => ({
+    name: facts[index] || "Others",
+    value: value,
   }));
 
-  const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"];
-
   return (
-    <div className="flex flex-row items-center justify-center bg-gray-50 rounded-lg border border-gray-300 shadow-lg w-128 m-8">
-      <PieChart width={700} height={500}>
-        <Pie
-          data={data}
-          cx="50%"
-          cy="50%"
-          labelLine={false}
-          label={CustomLabel}
-          outerRadius={160}
-          fill="#8884d8"
-          dataKey="value"
-        >
-          {data.map((entry: any, index: number) => (
-            <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-          ))}
-        </Pie>
-        <Pie
-          data={data}
-          cx="50%"
-          cy="50%"
-          labelLine={false}
-          label={renderCustomizedLabel}
-          outerRadius={160}
-          fill="#8884d8"
-          dataKey="value"
-        >
-          {data.map((entry: any, index: number) => (
-            <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-          ))}
-        </Pie>
-      </PieChart>
+    <div className="flex flex-col items-center justify-center bg-gray-50 rounded-lg border border-gray-300 shadow-lg w-152 m-8 p-4">
+      {whole && (
+        <div className="flex flex-row items-center flex-wrap justify-center">
+          <Before before={whole.before} />
+          <Number number={whole.number} whole />
+          <After after={whole.after} />
+        </div>
+      )}
+      <div className="w-full h-full flex flex-row">
+        <PieChart width={700} height={500}>
+          <Pie
+            data={data}
+            cx="50%"
+            cy="50%"
+            labelLine={false}
+            label={CustomLabel}
+            outerRadius={160}
+            fill="#8884d8"
+            dataKey="value"
+          >
+            {data.map((entry: any, index: number) => (
+              <Cell
+                key={`cell-${index}`}
+                fill={COLORS[index % COLORS.length]}
+              />
+            ))}
+          </Pie>
+          <Pie
+            data={data}
+            cx="50%"
+            cy="50%"
+            labelLine={false}
+            label={renderCustomizedLabel}
+            outerRadius={160}
+            fill="#8884d8"
+            dataKey="value"
+          >
+            {data.map((entry: any, index: number) => (
+              <Cell
+                key={`cell-${index}`}
+                fill={COLORS[index % COLORS.length]}
+              />
+            ))}
+          </Pie>
+        </PieChart>
+      </div>
     </div>
   );
 };

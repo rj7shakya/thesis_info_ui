@@ -1,17 +1,19 @@
 "use client";
 
+import { COLORS } from "@/app/utils";
 import React from "react";
 import { BarChart, Bar, XAxis, YAxis, Cell } from "recharts";
+import Before from "../elements/before";
+import Number from "../elements/number";
+import After from "../elements/after";
 
-const Infographic2Bar = ({ numbers, facts, quantity }: any) => {
-  const data = facts
-    .map((fact: string, index: number) => ({
-      name: fact,
-      value: numbers[index],
+const Infographic2Bar = ({ numbers, facts, quantity, whole }: any) => {
+  const data = numbers
+    .map((value: number, index: number) => ({
+      name: facts[index] || "Others",
+      value: value,
     }))
     .filter((item: any) => !isNaN(item.value));
-
-  const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"];
 
   const splitTextIntoLines = (text: string): string[] => {
     const words = text?.split(" ") ?? [];
@@ -89,7 +91,15 @@ const Infographic2Bar = ({ numbers, facts, quantity }: any) => {
   };
 
   return (
-    <div className="flex flex-row items-center justify-center bg-gray-50 rounded-lg border border-gray-300 shadow-lg w-128 m-8">
+    <div className="flex flex-col items-center justify-center bg-gray-50 rounded-lg border border-gray-300 shadow-lg w-152 m-8 p-4">
+      {whole && (
+        <div className="flex flex-row items-center flex-wrap justify-center">
+          <Before before={whole.before} />
+          <Number number={whole.number} whole />
+          <After after={whole.after} />
+        </div>
+      )}
+
       <BarChart
         width={600}
         height={400}

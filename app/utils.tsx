@@ -1,8 +1,25 @@
 import wordsToNumbers from "words-to-numbers";
 
 function extractNumber(str: string): number | null {
-  const match = str.match(/^(\d*\.?\d+)/);
+  str = str.replace(/,/g, "");
+  str = str.toLowerCase();
+  if (str.includes("billion")) {
+    const num = parseFloat(str.replace(/billion.*$/, ""));
+    return num * 1000000000;
+  }
+  if (str.includes("million")) {
+    const num = parseFloat(str.replace(/million.*$/, ""));
+    return num * 1000000;
+  }
 
+  console.log("strstr", str);
+
+  if (str.includes("-")) {
+    const [min, max] = str.split("-").map((num) => parseFloat(num));
+    return (min + max) / 2; // Return average of range
+  }
+
+  const match = str.match(/^(\d*\.?\d+)c?$/i);
   if (match) {
     return parseFloat(match[1]);
   }
@@ -43,16 +60,50 @@ function parseNumberString(numStr: string) {
   return [];
 }
 
-const checkRelatedFact = (facts: any): any => {
-  const sameSubject = facts.every(
-    (fact: any) => fact.subject === facts[0].subject
-  );
+const checkRelatedFact = (facts: any, whole?: any): any => {
+  const sameUnit = facts.every((fact: any) => fact.unit === facts[0].unit);
 
-  if (sameSubject && facts[0].type === "quantity_whole") {
+  if (
+    sameUnit &&
+    (facts[0].type === "quantity_whole" ||
+      facts[0].type === "quantity_part" ||
+      facts[0].type === "change_increase" ||
+      facts[0].type === "change_decrease")
+  ) {
     const numbers = facts.map((fact: any) => {
       const parsed = extractNumber(fact.number);
+      console.log("parsed", parsed, fact.number);
       return parsed !== undefined ? parsed : null;
     });
+
+    if (numbers.every((n: any) => n !== null)) {
+      const max = Math.max(...numbers);
+      const min = Math.min(...numbers);
+      if (max / min > 7) {
+        return {
+          isRelated: false,
+          type: "quantity",
+          numbers: numbers,
+        };
+      }
+    }
+
+    const sum = numbers.reduce(
+      (acc: number, curr: number) =>
+        curr !== undefined && curr !== null ? acc + curr : acc,
+      0
+    );
+
+    if (sum < whole?.number) {
+      const remainingValue = whole?.number - sum;
+      numbers.push(remainingValue);
+      return {
+        isRelated: true,
+        type: "quantity",
+        numbers: numbers,
+      };
+    }
+
     return {
       isRelated: true,
       type: "quantity",
@@ -60,7 +111,7 @@ const checkRelatedFact = (facts: any): any => {
     };
   }
 
-  if (sameSubject && facts[0].type === "proportion") {
+  if (sameUnit && facts[0].type === "proportion") {
     const numbers = facts
       .map((fact: any) => {
         const parsed = parseNumberString(fact.number)[0];
@@ -119,9 +170,20 @@ function extractPercentage(text: string) {
   return match ? Number(match[1]) : null; // Convert to Number, return null if not found
 }
 
+const COLORS = [
+  "#0088FE",
+  "#00C49F",
+  "#FFBB28",
+  "#FF8042",
+  "#8884d8",
+  "#FF69B4",
+  "#9370DB",
+];
+
 export {
   parseNumberString,
   checkRelatedFact,
   separateNumbersText,
   extractPercentage,
+  COLORS,
 };
