@@ -61,7 +61,8 @@ function parseNumberString(numStr: string) {
 }
 
 const checkRelatedFact = (facts: any, whole?: any): any => {
-  const sameUnit = facts.every((fact: any) => fact.unit === facts[0].unit);
+  const sameUnit =
+    facts[0]?.unit && facts.every((fact: any) => fact.unit === facts[0].unit);
 
   if (
     sameUnit &&
@@ -79,7 +80,7 @@ const checkRelatedFact = (facts: any, whole?: any): any => {
     if (numbers.every((n: any) => n !== null)) {
       const max = Math.max(...numbers);
       const min = Math.min(...numbers);
-      if (max / min > 7) {
+      if (max / min > 17) {
         return {
           isRelated: false,
           type: "quantity",
