@@ -9,8 +9,10 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@types/fabric": "^5.3.10",
     "autoprefixer": "^10.4.20",
     "axios": "^1.8.1",
+    "fabric": "^6.6.2",
     "next": "15.2.0",
     "postcss": "^8.5.3",
     "react": "^19.0.0",
