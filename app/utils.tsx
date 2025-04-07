@@ -80,7 +80,7 @@ const checkRelatedFact = (facts: any, whole?: any): any => {
     if (numbers.every((n: any) => n !== null)) {
       const max = Math.max(...numbers);
       const min = Math.min(...numbers);
-      if (max / min > 17) {
+      if (max / min > 7) {
         return {
           isRelated: false,
           type: "quantity",
