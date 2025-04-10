@@ -9,9 +9,10 @@ import {
   Group,
   Text,
   Line,
-  Image,
   Object as FabricObject,
+  StaticCanvas,
 } from "fabric";
+import * as fabric from "fabric";
 
 interface EditableInfographicProps {
   data: {
@@ -154,42 +155,68 @@ const EditableInfographic: React.FC<EditableInfographicProps> = ({
     canvas.add(pieGroup);
   };
 
-  const loadImage = (canvas: Canvas) => {
+  const loadImage = (canvas: any) => {
     console.log("imageUrl", imageUrl);
     if (imageUrl) {
-      // Add crossOrigin option for hosted images
-      Image.fromURL(
-        imageUrl,
-        ((img: any) => {
-          if (!img) return;
-          console.log("img", img);
-          // Scale image to fit within 200x200 while maintaining aspect ratio
-          const maxSize = 200;
-          const scale = Math.min(
-            maxSize / (img.width || 1),
-            maxSize / (img.height || 1)
-          );
+      try {
+        fabric.Image.fromURL(
+          "http://fabricjs.com/assets/pug_small.jpg",
+          (img) => {
+            img.set({
+              left: 100,
+              top: 100,
+              scaleX: 0.7,
+              scaleY: 0.7,
+            });
+            canvas.add(img);
+          }
+        );
+        // Add crossOrigin option for hosted images
+        // @ts-ignore: Image.fromURL is deprecated but still functional
+        // fabric.Image.fromURL(
+        //   "http://fabricjs.com/assets/pug_small.jpg",
+        //   ((img: any) => {
+        //     console.log("img", img);
+        //     if (!img) {
+        //       console.error("Failed to load image");
+        //       return;
+        //     }
 
-          img.scale(scale);
+        //     // Scale image to fit within 200x200 while maintaining aspect ratio
+        //     const maxSize = 200;
+        //     const scale = Math.min(
+        //       maxSize / (img.width || 1),
+        //       maxSize / (img.height || 1)
+        //     );
 
-          // Position image in the center of the canvas
-          img.set({
-            left: 400,
-            top: 300,
-            originX: "center",
-            originY: "center",
-            selectable: isEditing,
-            hasControls: isEditing,
-            hasBorders: isEditing,
-          });
+        //     img.scale(scale);
 
-          canvas.add(img);
-          canvas.renderAll();
-        }) as any,
-        {
-          crossOrigin: "anonymous", // Enable CORS for hosted images
-        }
-      );
+        //     // Position image in the center of the canvas
+        //     img.set({
+        //       left: 400,
+        //       top: 300,
+        //       originX: "center",
+        //       originY: "center",
+        //       selectable: isEditing,
+        //       hasControls: isEditing,
+        //       hasBorders: isEditing,
+        //     });
+
+        //     canvas.add(img);
+        //     canvas.renderAll();
+        //   }) as any,
+        //   {
+        //     crossOrigin: "anonymous", // Enable CORS for hosted images
+        //     error: (err: Error) => {
+        //       console.error("Error loading image:", err);
+        //     },
+        //   }
+        // );
+      } catch (error) {
+        console.log("here here");
+
+        console.error("Error in loadImage:", error);
+      }
     }
   };
 
